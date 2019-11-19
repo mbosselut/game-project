@@ -21,5 +21,6 @@ const User = sequelize.define(
 );
 
 User.belongsTo(Room);
+Room.hasMany(User);
 
 module.exports = User
