@@ -40,6 +40,39 @@ function roomFactory(stream) {
     res.send(updatedUser)
     })
 
+    //test to increase points
+    router.put(
+      '/points/:userId',
+      async (request, response, next) => {
+        const { userId } = request.params
+  
+        const user = await User
+          .findByPk(userId)
+  
+        const updated = await user.update(
+          { points: 1 }
+        )
+  
+        const rooms = await Room
+          .findAll({ include: [User] })
+  
+        const action = {
+          type: 'ROOMS',
+          payload: rooms
+        }
+  
+        const string = JSON
+          .stringify(action)
+  
+        stream.send(string)
+  
+        response.send(updated)
+      }
+    )
+  
+    return router
+  }
+  
   return router;
 }
 
