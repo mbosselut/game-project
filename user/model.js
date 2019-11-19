@@ -19,6 +19,7 @@ const User = sequelize.define(
 		tableName: 'users'
 	}
 );
-User.belongsTo(Room)
 
-module.exports = User;
+User.belongsTo(Room);
+
+module.exports = User

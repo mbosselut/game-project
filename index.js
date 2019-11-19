@@ -25,7 +25,9 @@ app.use(roomRouter);
 
 app.get('/stream', async (req, res, next) => {
     const rooms = await Room.findAll()
-    const string = JSON.stringify(rooms);
+
+    const action = {type: 'ROOMS', payload: rooms}
+    const string = JSON.stringify(action);
     stream.updateInit(string);
     stream.init(req, res);
 })
