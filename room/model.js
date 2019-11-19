@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
-const User = require('../user/model');
 
 const Room = sequelize.define(
 	'room',
@@ -11,7 +10,5 @@ const Room = sequelize.define(
 		}
 	},
 );
-
-console.log('User test:', User)
 
 module.exports = Room;
