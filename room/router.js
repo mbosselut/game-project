@@ -1,6 +1,7 @@
 const express = require('express');
 const Room = require('./model');
 const { Router } = express;
+const auth = require('../auth/middleware')
 
 function roomFactory(stream) {
     const router = new Router();

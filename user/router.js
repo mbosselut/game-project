@@ -14,4 +14,18 @@ router.post('/user', (req, res, next) => {
 		.catch(next);
 });
 
+
+router.put('/join', (req, res, next) => {
+	console.log('Req.body is : ', req.body)
+	User.findByPk(parseInt(req.body.userId))
+	.then(user => {
+		if(!user) {
+			return res.status(404).send({message: 'User not found'})
+		}
+		user.update(req.body)
+		.then(user => res.send(user))
+		.catch(() => res.status(404).send({message: 'Could not update the user'}))
+	})
+})
+
 module.exports = router;
