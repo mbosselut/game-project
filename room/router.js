@@ -40,38 +40,55 @@ function roomFactory(stream) {
     res.send(updatedUser)
     })
 
-    //test to increase points
+    //Adds 1 point to a player
     router.put(
       '/points/:userId',
-      async (request, response, next) => {
-        const { userId } = request.params
-  
-        const user = await User
-          .findByPk(userId)
-  
-        const updated = await user.update(
-          { points: 1 }
-        )
-  
-        const rooms = await Room
-          .findAll({ include: [User] })
-  
-        const action = {
-          type: 'ROOMS',
-          payload: rooms
-        }
-  
-        const string = JSON
-          .stringify(action)
-  
-        stream.send(string)
-  
-        response.send(updated)
+    async (request, response, next) => {
+      const { userId } = request.params
+      const user = await User
+        .findByPk(userId)
+      const currentPoints = user.points;
+      const updated = await user.update(
+        { points: currentPoints + 1 }
+      )
+      const rooms = await Room
+        .findAll({ include: [User] })
+      const action = {
+        type: 'ROOMS',
+        payload: rooms
       }
-    )
+
+      const string = JSON
+        .stringify(action)
+
+      stream.send(string)
+
+      response.send(updated)
+    })
+
+    //Adding wordToGuess to room
+    router.put('/room/:roomName', async (req, res, next) => {
+      const { roomName } = req.params;
+      const { wordToGuess } = req.body;
+      const room = await Room.findOne({where: {name: roomName}})
+      const updatedRoom = await room.update({ wordToGuess })
+
+      const rooms = await Room
+        .findAll({ include: [User] })
+      const action = {
+        type: 'ROOMS',
+        payload: rooms
+      }
+
+      const string = JSON
+        .stringify(action)
+
+      stream.send(string)
+
+      res.send(updatedRoom)
+    })
   
-    return router
-  }
+
   
   return router;
 }
