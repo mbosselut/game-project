@@ -10,6 +10,7 @@ const userRouter = require('./user/router');
 const auth = require('./auth/middleware');
 const Sse = require('json-sse');
 const roomFactory = require('./room/router');
+const Room = require('./room/model')
 
 app.use(corsMiddleware);
 app.use(jsonParser);
@@ -22,7 +23,10 @@ const roomRouter = roomFactory(stream);
 
 app.use(roomRouter);
 
-app.get('/stream', (req, res, next) => {
+app.get('/stream', async (req, res, next) => {
+    const rooms = await Room.findAll()
+    const string = JSON.stringify(rooms);
+    stream.updateInit(string);
     stream.init(req, res);
 })
 
