@@ -24,18 +24,21 @@ function roomFactory(stream) {
       data = toData(auth[1])
     }
     console.log('data is : ', data)
+    //Identifying user with userId
     const user = await User.findByPk(data.userId)
+    //Getting room name
     const { name } = req.params;
+    //Finding room in DB
     const room = await Room.findOne({where: {name} })
-  
+    //Updating user with roomId
     const updatedUser = await user.update({roomId: room.id})
-  
-    const rooms = await Room.findAll({include: [User]})
-  
+    //Grabbing all rooms and including relational data
+    const rooms = await Room.findAll({include: [User, Board]})
+    //Create a new action with the rooms array as payload
     const action = {type: 'ROOMS', payload: rooms};
-  
+    
     const string = JSON.stringify(action);
-  
+    //Send the action to the stream
     stream.send(string);
   
     res.send(updatedUser)
@@ -53,7 +56,7 @@ function roomFactory(stream) {
         { points: currentPoints + 1 }
       )
       const rooms = await Room
-        .findAll({ include: [User] })
+        .findAll({ include: [User, Board] })
       const action = {
         type: 'ROOMS',
         payload: rooms
@@ -74,7 +77,7 @@ function roomFactory(stream) {
       const board = await Board.findOne({where: {roomId: roomId}})
       const updatedBoard = await board.update({ wordToGuess })
       const rooms = await Room
-        .findAll({ include: [Board] })
+        .findAll({ include: [Board, User] })
       const action = {
         type: 'ROOMS',
         payload: rooms
