@@ -7,6 +7,10 @@ const Room = sequelize.define(
 		name: {
 			type: Sequelize.STRING,
 			allowNull: false
+		},
+		wordToGuess: {
+			type: Sequelize.STRING,
+			allowNull: true
 		}
 	},
 );

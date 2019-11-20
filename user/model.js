@@ -12,7 +12,8 @@ const User = sequelize.define(
 		password: {
 			type: Sequelize.STRING,
 			allowNull: false
-		}
+		},
+		points: Sequelize.INTEGER
 	},
 	{
 		timestamps: false,
