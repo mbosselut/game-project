@@ -68,10 +68,10 @@ function roomFactory(stream) {
     })
 
     //Adding wordToGuess to board
-    router.put('/board/:boardId', async (req, res, next) => {
-      const { boardId } = req.params;
+    router.put('/board/:roomId', async (req, res, next) => {
+      const { roomId } = req.params;
       const { wordToGuess } = req.body;
-      const board = await Board.findOne({where: {id: boardId}})
+      const board = await Board.findOne({where: {roomId: roomId}})
       const updatedBoard = await board.update({ wordToGuess })
       const rooms = await Room
         .findAll({ include: [Board] })
