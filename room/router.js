@@ -4,6 +4,7 @@ const { Router } = express;
 const { toData } = require('../auth/jwt');
 const auth = require("../auth/middleware");
 const User = require('../user/model')
+const Board = require('../board/model')
 
 function roomFactory(stream) {
   const router = new Router();
@@ -66,15 +67,14 @@ function roomFactory(stream) {
       response.send(updated)
     })
 
-    //Adding wordToGuess to room
-    router.put('/room/:roomName', async (req, res, next) => {
-      const { roomName } = req.params;
+    //Adding wordToGuess to board
+    router.put('/board/:boardId', async (req, res, next) => {
+      const { boardId } = req.params;
       const { wordToGuess } = req.body;
-      const room = await Room.findOne({where: {name: roomName}})
-      const updatedRoom = await room.update({ wordToGuess })
-
+      const board = await Board.findOne({where: {id: boardId}})
+      const updatedBoard = await board.update({ wordToGuess })
       const rooms = await Room
-        .findAll({ include: [User] })
+        .findAll({ include: [Board] })
       const action = {
         type: 'ROOMS',
         payload: rooms
@@ -85,7 +85,7 @@ function roomFactory(stream) {
 
       stream.send(string)
 
-      res.send(updatedRoom)
+      res.send(updatedBoard)
     })
   
 
