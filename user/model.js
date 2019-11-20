@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
 const Room = require('../room/model');
+const Board = require('../board/model');
 
 const User = sequelize.define(
 	'user',
@@ -22,6 +23,8 @@ const User = sequelize.define(
 );
 
 User.belongsTo(Room);
+Board.belongsTo(Room);
 Room.hasMany(User);
+Room.hasOne(Board);
 
 module.exports = User

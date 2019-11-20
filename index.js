@@ -7,6 +7,7 @@ const corsMiddleware = cors();
 const port = process.env.PORT || 4000;
 const authRouter = require('./auth/router')
 const userRouter = require('./user/router');
+const boardRouter = require('./board/router');
 const auth = require('./auth/middleware');
 const Sse = require('json-sse');
 const roomFactory = require('./room/router');
@@ -17,6 +18,7 @@ app.use(corsMiddleware);
 app.use(jsonParser);
 app.use(authRouter);
 app.use(userRouter);
+app.use(boardRouter);
 
 const stream = new Sse();
 
