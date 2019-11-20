@@ -13,6 +13,7 @@ const Sse = require('json-sse');
 const roomFactory = require('./room/router');
 const Room = require('./room/model')
 const User = require('./user/model');
+const Board = require('./board/model')
 
 app.use(corsMiddleware);
 app.use(jsonParser);
@@ -27,7 +28,7 @@ const roomRouter = roomFactory(stream);
 app.use(roomRouter);
 
 app.get('/stream', async (req, res, next) => {
-    const rooms = await Room.findAll({include: [User]})
+    const rooms = await Room.findAll({include: [User, Board]})
 
     const action = {type: 'ROOMS', payload: rooms}
     const string = JSON.stringify(action);
