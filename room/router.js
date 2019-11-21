@@ -72,14 +72,16 @@ function roomFactory(stream) {
     response.send(updated);
   });
 
-  //Adding wordToGuess to board
+  //Adding or updating wordToGuess/guesses/currentPlayer in board
   router.put("/board/:roomId", async (req, res, next) => {
     const { roomId } = req.params;
     const { wordToGuess } = req.body || "";
     const { guesses } = req.body || "";
+    const { currentPlayer } = req.body || "";
+    const { gameOn } = req.body || "";
     const board = await Board.findOne({ where: { roomId: roomId } });
 
-    const updatedBoard = await board.update({ wordToGuess, guesses });
+    const updatedBoard = await board.update({ wordToGuess, guesses, currentPlayer, gameOn });
     const rooms = await Room.findAll({ include: [Board, User] });
     const action = {
       type: "ROOMS",
