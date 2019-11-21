@@ -12,6 +12,14 @@ const Board = sequelize.define(
 			type: Sequelize.STRING,
 			allowNull: true
 		},
+		gameOn: {
+			type: Sequelize.BOOLEAN,
+			allowNull: true
+		},
+		currentPlayer: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		},
 		roomId: {
             type: Sequelize.INTEGER,
             allowNull: false 
