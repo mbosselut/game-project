@@ -10,19 +10,26 @@ function roomFactory(stream) {
   const router = new Router();
 
   router.post("/room", async (req, res, next) => {
-    const room = await Room.create(req.body);
-    const rooms = await Room.findAll({ include: [User, Board] });
-    const action = {
-      type: "ROOMS",
-      payload: rooms
-    };
-    const string = JSON.stringify(action);
-    stream.send(string);
-    // Used to be the below, updated to always include User and Board in stream
-    // const action = { type: "ROOM", payload: room };
-    // const data = JSON.stringify(action);
-    // stream.send(data);
-    res.send(room);
+    try {
+      console.log("req.body test:", req.body);
+      const room = await Room.create(req.body);
+      console.log("room test:", room);
+      const rooms = await Room.findAll({ include: [User, Board] });
+
+      const action = {
+        type: "ROOMS",
+        payload: rooms
+      };
+      const string = JSON.stringify(action);
+      stream.send(string);
+      // Used to be the below, updated to always include User and Board in stream
+      // const action = { type: "ROOM", payload: room };
+      // const data = JSON.stringify(action);
+      // stream.send(data);
+      res.send(room);
+    } catch (error) {
+      next(error);
+    }
   });
 
   router.patch("/join/:name", auth, async (req, res, next) => {
@@ -56,9 +63,13 @@ function roomFactory(stream) {
   //Adds 1 point to a player
   router.put("/points/:userId", async (request, response, next) => {
     const { userId } = request.params;
+    console.log("userId", userId);
     const user = await User.findByPk(userId);
-    const currentPoints = user.points;
-    const updated = await user.update({ points: currentPoints + 1 });
+    console.log("user found: ", user);
+    const points = parseInt(request.body.points) || 0;
+    //const currentPoints = user.points;
+    const updated = await user.update({ points: points });
+    console.log("update user: ", updated);
     const rooms = await Room.findAll({ include: [User, Board] });
     const action = {
       type: "ROOMS",
@@ -81,7 +92,12 @@ function roomFactory(stream) {
     const { gameOn } = req.body || "";
     const board = await Board.findOne({ where: { roomId: roomId } });
 
-    const updatedBoard = await board.update({ wordToGuess, guesses, currentPlayer, gameOn });
+    const updatedBoard = await board.update({
+      wordToGuess,
+      guesses,
+      currentPlayer,
+      gameOn
+    });
     const rooms = await Room.findAll({ include: [Board, User] });
     const action = {
       type: "ROOMS",
