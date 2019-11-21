@@ -11,9 +11,17 @@ function roomFactory(stream) {
 
   router.post("/room", async (req, res, next) => {
     const room = await Room.create(req.body);
-    const action = { type: "ROOM", payload: room };
-    const data = JSON.stringify(action);
-    stream.send(data);
+    const rooms = await Room.findAll({ include: [User, Board] });
+    const action = {
+      type: "ROOMS",
+      payload: rooms
+    };
+    const string = JSON.stringify(action);
+    stream.send(string);
+    // Used to be the below, updated to always include User and Board in stream
+    // const action = { type: "ROOM", payload: room };
+    // const data = JSON.stringify(action);
+    // stream.send(data);
     res.send(room);
   });
 
