@@ -47,7 +47,7 @@ function roomFactory(stream) {
     //Finding room in DB
     const room = await Room.findOne({ where: { name } });
     //Updating user with roomId
-    const updatedUser = await user.update({ roomId: room.id });
+    const updatedUser = await user.update({ roomId: room.id, points: 0 });
     //Grabbing all rooms and including relational data
     const rooms = await Room.findAll({ include: [User, Board] });
     //Create a new action with the rooms array as payload
